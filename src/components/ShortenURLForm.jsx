@@ -5,7 +5,7 @@ import CopyIcon from '@mui/icons-material/ContentCopy';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import ReplaySharpIcon from '@mui/icons-material/ReplaySharp';
-const urlShortnerService = process.env.SHORTNER_SERVICE || "https://mpdgqi8p4l.execute-api.us-east-1.amazonaws.com/dev/api"
+//const urlShortnerService = process.env.SHORTNER_SERVICE || "https://901tx17pbl.execute-api.us-east-1.amazonaws.com/dev/api"
 
 const ShortenURLForm = () => {
     const [longURL, setLongURL] = useState('');
@@ -25,22 +25,26 @@ const ShortenURLForm = () => {
         setShortUrl('')
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
-        fetch(`${urlShortnerService}`, {
+        let response = await fetch(`/api`, {
             method: 'POST',
             body: JSON.stringify({ url: longURL }),
             headers: {
                 'Content-Type': 'application/json',
             },
         })
-            .then((response) => response.json())
-            .then((data) => {
+        Promise.resolve()
+            .then(async () => {
+                let status = response.status
+                let data = await response.json()
+                console.log(data, "--", status)
                 // Display the shortened URL or error message
-                if (data.statusCode === 200) {
-                    setShortUrl(data.body.shortUrl)
-                    showSnackbar(data.body.shortUrl);
+                if (status === 200) {
+                    setShortUrl(data.shortUrl)
+                    console.log(shortUrl)
+                    showSnackbar(data.shortUrl);
                 } else {
                     showSnackbar('Error: Unable to shorten URL');
                 }
