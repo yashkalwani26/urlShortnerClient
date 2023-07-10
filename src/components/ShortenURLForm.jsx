@@ -5,7 +5,7 @@ import CopyIcon from '@mui/icons-material/ContentCopy';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import ReplaySharpIcon from '@mui/icons-material/ReplaySharp';
-const urlShortnerService = process.env.SHORTNER_SERVICE || "localhost"
+const urlShortnerService = process.env.SHORTNER_SERVICE || "https://mpdgqi8p4l.execute-api.us-east-1.amazonaws.com/dev/api"
 
 const ShortenURLForm = () => {
     const [longURL, setLongURL] = useState('');
@@ -27,8 +27,8 @@ const ShortenURLForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        setShortUrl(longURL)
-        fetch(urlShortnerService, {
+
+        fetch(`${urlShortnerService}`, {
             method: 'POST',
             body: JSON.stringify({ url: longURL }),
             headers: {
