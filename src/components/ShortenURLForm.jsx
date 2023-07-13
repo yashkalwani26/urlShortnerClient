@@ -5,12 +5,14 @@ import CopyIcon from '@mui/icons-material/ContentCopy';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import ReplaySharpIcon from '@mui/icons-material/ReplaySharp';
+import SendIcon from '@mui/icons-material/Send';
 //const urlShortnerService = process.env.SHORTNER_SERVICE || "https://901tx17pbl.execute-api.us-east-1.amazonaws.com/dev/api"
 
 const ShortenURLForm = () => {
     const [longURL, setLongURL] = useState('');
     const [shortUrl, setShortUrl] = useState('');
     const textFieldRef = useRef(null);
+    const [phone, setPhone] = useState('');
 
     const handleCopy = () => {
         if (textFieldRef.current) {
@@ -23,6 +25,7 @@ const ShortenURLForm = () => {
     const handleReset = () => {
         setLongURL('')
         setShortUrl('')
+        setPhone('')
     }
 
     const handleSubmit = async (e) => {
@@ -53,6 +56,34 @@ const ShortenURLForm = () => {
                 showSnackbar('Error: Unable to connect to the server');
             });
     };
+
+    const handleSendPhone = async (e) => {
+        e.preventDefault()
+
+        let response = await fetch(`/api`, {
+            method: 'PUT',
+            body: JSON.stringify({ message: `Please find your shortened URL - ${shortUrl}`, phone: phone }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        Promise.resolve()
+            .then(async () => {
+                let status = response.status
+                let data = await response.json()
+                console.log(data, "--", status)
+                // Display the shortened URL or error message
+                if (status === 200) {
+                    console.log(data.message)
+                    showSnackbar(data.message);
+                } else {
+                    showSnackbar('Error: Unable to sent SMS');
+                }
+            })
+            .catch(() => {
+                showSnackbar('Error: Unable to connect to the server');
+            });
+    }
 
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
@@ -126,14 +157,29 @@ const ShortenURLForm = () => {
                                     fullWidth
                                     disabled
                                     value={shortUrl}
-                                    onChange={(e) => setLongURL(e.target.value)}
+                                    onChange={(e) => setShortUrl(e.target.value)}
                                 />
-
                             </Grid>
                             <Grid item xs={2}>
                                 <Tooltip title="Copy Short URL">
                                     <IconButton onClick={handleCopy}>
                                         <CopyIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={10}>
+                                <TextField
+                                    label="Share to Phone"
+                                    id="outlined-multiline-static"
+                                    fullWidth
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Tooltip title="Send SMS">
+                                    <IconButton onClick={handleSendPhone}>
+                                        <SendIcon />
                                     </IconButton>
                                 </Tooltip>
                             </Grid>
