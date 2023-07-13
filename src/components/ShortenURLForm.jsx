@@ -15,7 +15,7 @@ const ShortenURLForm = () => {
     const handleCopy = () => {
         if (textFieldRef.current) {
             textFieldRef.current.select();
-            navigator.clipboard.writeText(shortUrl);
+            document.execCommand('copy');
             showSnackbar('copied to clipboard!')
         }
     };
