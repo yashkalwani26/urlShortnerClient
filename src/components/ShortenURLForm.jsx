@@ -160,13 +160,13 @@ const ShortenURLForm = () => {
                                     onChange={(e) => setShortUrl(e.target.value)}
                                 />
                             </Grid>
-                            <Grid item xs={2}>
+{/*                             <Grid item xs={2}>
                                 <Tooltip title="Copy Short URL">
                                     <IconButton onClick={handleCopy}>
                                         <CopyIcon />
                                     </IconButton>
                                 </Tooltip>
-                            </Grid>
+                            </Grid> */}
                             <Grid item xs={10}>
                                 <TextField
                                     label="Share to Phone"
